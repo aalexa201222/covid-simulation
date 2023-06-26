@@ -11,6 +11,8 @@ The COVID Simulation project is a Java-based program that simulates the spread o
 <pre class="notranslate"><code>git clone https://github.com/aalexa201222/covid-simulation.github.io.git
 </code></pre>
 
+## 🚀 Building and Running
+Run the Project in IntelliJ IDEA
 
 ## Author
 [Andreas Alexandrou](https://www.linkedin.com/in/andreas-alexandrou-056528242)
