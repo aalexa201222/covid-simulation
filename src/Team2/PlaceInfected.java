@@ -1,6 +1,8 @@
-import java.util.ArrayList;
+package Team2;
 
-//import edu.princeton.cs.introcs.StdDraw; // Library to import the StdDraw to the package
+import java.util.ArrayList; // Library that is used for Arralist
+
+import edu.princeton.cs.introcs.StdDraw; // Library to import the StdDraw to the package
 
 /**
  * PlaceInfected Class is used to check and set if the place is infected and if
@@ -13,11 +15,11 @@ import java.util.ArrayList;
  */
 public class PlaceInfected extends Movement {
 	private int[][] duration; // Stores the duration that each of the places will be infected
-	ArrayList<Person> p; // A type Person array that stores all the information for the people
+	ArrayList<Person> p; // A type Person arraylist that stores all the information for the people
 	private int time; // The time that the simulation will be ran
-	private int beginPl;
+
 	/**
-	 * PlaceInfected constructor that takes four integers and one Person[] as
+	 * PlaceInfected constructor that takes four integers and one ArrayList<Person> as
 	 * inputs:h,w,c,t,p. It calls the super constructor for h,w and c super(h,w,c).
 	 * It also creates an int array for duration(height = h, width = w) that is
 	 * initialized to 0.
@@ -30,7 +32,7 @@ public class PlaceInfected extends Movement {
 	 * 
 	 * @param t Represents the time that the simulation will be ran
 	 * 
-	 * @param p Represents a type Person array that stores all the information for
+	 * @param p Represents a type Person arraylist that stores all the information for
 	 *          the people
 	 */
 	public PlaceInfected(int h, int w, int c, int t, ArrayList<Person> p) {
@@ -38,7 +40,7 @@ public class PlaceInfected extends Movement {
 		this.p = p;
 		time = t;
 		duration = new int[w][h];
-		
+
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				duration[i][j] = 0;
@@ -51,9 +53,9 @@ public class PlaceInfected extends Movement {
 	 * sets the duration by checking if each of theses persons are infected and not
 	 * wearing mask for protection.
 	 * 
-	 * @param ppl A type Person array that stores all the information for the people
+	 * @param ppl A type Person arraylist that stores all the information for the people
 	 */
-	public void setDuration(ArrayList<Person> ppl,int c) {
+	public void setDuration(ArrayList<Person> ppl, int c) {
 		for (int i = 0; i < crowd; i++) {
 			if (((Person) ppl.get(i)).isInfected() && !((Person) ppl.get(i)).wearsProtection())
 				duration[((Person) ppl.get(i)).getCoordinates().getX()][((Person) ppl.get(i)).getCoordinates()
@@ -94,7 +96,7 @@ public class PlaceInfected extends Movement {
 	 * YELLOW
 	 */
 	public void PrintInfection() {
-		//System.out.println(width+" "+height);
+		// System.out.println(width+" "+height);
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				if (duration[i][j] > 0) {

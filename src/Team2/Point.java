@@ -1,4 +1,6 @@
-//import edu.princeton.cs.introcs.StdDraw; // Library to import the StdDraw to the package
+package Team2;
+
+import edu.princeton.cs.introcs.StdDraw; // Library to import the StdDraw to the package
 
 /**
  * The class Point represents a point (x,y)

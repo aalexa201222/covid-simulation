@@ -1,4 +1,6 @@
-//import edu.princeton.cs.introcs.StdDraw; // Library to import the StdDraw to the package
+package Team2;
+
+import edu.princeton.cs.introcs.StdDraw; // Library to import the StdDraw to the package
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -37,7 +39,6 @@ public class Simulation {
 		// The user enters manually the health of the people
 		String Infected;
 		String Immune;
-
 		String option; // The user is asked if he/she wants to add manually the probabilities of
 		String option1; // infection
 		String ppVirus; // Person-to-Person probability of infection without mask
@@ -59,12 +60,6 @@ public class Simulation {
 		int sumAreas = 0;
 		int sumBorders = 0;
 		Area[] areas = null;
-		// int userHeight = 0;
-		// int userWidth = 0;
-		// int userCrowd = 0;
-		// int sumInfected = 0;
-		// int sumHealthy = 0;
-		// int sumImmune = 0;
 
 		boolean done = true;
 
@@ -83,7 +78,17 @@ public class Simulation {
 		System.out.println("                 && wearing a mask                           \n");
 		System.out.println("When floor is colored: 1) ORANGE, it just got infected         ");
 		System.out.println("                       2) YELLOW, it will stop being infected\n");
-		System.out.println("*Every person stays at the place for 1 minute.                ");
+		System.out.println("The borders are indicated with a circle.                       ");
+		System.out.println("The borders have 3 different colors depending on the area they ");
+		System.out.println("lead to:               1) PINK                                 ");
+		System.out.println("                       2) WHITE                                ");
+		System.out.println("                       3) LIGHT BLUE                           ");
+		System.out.println("\nRemember that borders can only be placed on the perimeter of the");
+		System.out.println("areas.");
+		System.out.println("*If there are more than 3 areas, different borders can have the ");
+		System.out.println("same colors.                                                 \n");
+		System.out.println("*Every person stays at the place for 1 minute.                 ");
+		System.out.println("*For each minute, the simulation shows the movement in each area.");
 
 		// While loop to read all the inputs, that stops whenever none of the exception
 		// are caught
@@ -139,11 +144,13 @@ public class Simulation {
 				}
 				System.out.println("---------------------------------------------------------------");
 				System.out.println("Also please tell us:");
-				System.out.println("The number of areas that people will interact: ");
+				System.out.print("The number of areas that people will interact: ");
 				places = input.nextLine();
 				sumAreas = Integer.parseInt(places);
 				if (sumAreas < 0)
 					throw new NegativeNumberException();
+				if (sumAreas > 26)
+					throw new NegativeNumberException("\nThe areas cannot be more than 26.\n");
 
 				areas = new Area[sumAreas];
 
@@ -174,13 +181,8 @@ public class Simulation {
 						throw new OvercrowdedException();
 
 					if (sumAreas > 1)
-						areas[i].setBorders();
-
+						areas[i].setBorders(sumAreas,sumAreas);
 				}
-
-				// for (int j = 0; j < town.length; j++) {
-				// System.out.println(town[j] + " ");
-
 				// Reads the time of the program
 				System.out.print("\nGive the time of the program (in minutes): ");
 				time = input.nextLine();
@@ -210,7 +212,7 @@ public class Simulation {
 				System.out.println("Put a number to the input" + "\n");
 			}
 		}
-		
+
 		for (int i = 0; i < sumAreas; i++) {
 			areas[i].setPeople();
 			if (areas[i].getHeight() >= 20 && areas[i].getHeight() >= 20)
@@ -221,30 +223,48 @@ public class Simulation {
 			areas[i].setPlaces(userDuration);
 			StdDraw.enableDoubleBuffering();
 			areas[i].drawInitialArea();
-			
-			
+
 			delay();
 			StdDraw.show();
 			StdDraw.pause(6);
 		}
 
-		// Runs the simulation for the time that is given from the user
-		
-		// Person[] Arr=new Person[userCrowd];
-		for (int i = 0; i < userTime - 1; i++)
+		for (int i = 0; i < userTime - 1; i++) {
+			ArrayList<Person>[] allTransportedPeople = new ArrayList[sumAreas];
+			for (int k = 0; k < sumAreas; k++)
+				allTransportedPeople[k] = new ArrayList<Person>();
+
+			ArrayList<Character>[] allNames = new ArrayList[sumAreas];
+			for (int k = 0; k < sumAreas; k++)
+				allNames[k] = new ArrayList<Character>();
+
 			for (int j = 0; j < sumAreas; j++) {
+				ArrayList<Person>[] transportedPeopleOfArea;
 				if (opt == 1)
-					areas[j].drawEachStep(peopleVirus, placeVirus, peopleMask, placeMask);
-				else {
-					
-					areas[j].drawEachStep(-1, -1, -1, -1);}
+					transportedPeopleOfArea = areas[j].drawEachStep(peopleVirus, placeVirus, peopleMask, placeMask,
+							areas);
+				else
+					transportedPeopleOfArea = areas[j].drawEachStep(-1, -1, -1, -1, areas);
+
+				ArrayList<Character>[] namesOfTheBorders = areas[j].getNamesOfTheBorders();
+
+				for (int k = 0; k < transportedPeopleOfArea.length; k++)
+					for (int z = 0; z < transportedPeopleOfArea[k].size(); z++) {
+						allTransportedPeople[j].add(transportedPeopleOfArea[k].get(z));
+						allNames[j].add(namesOfTheBorders[k].get(z));
+					}
+
 			}
-		/*
-		 * ArrayList Array=new ArrayList(); for (int i = 0; i < Arr.length; i++) {
-		 * Array.add(Arr[i]); } for (int i = 0; i < Array.size(); i++) {
-		 * 
-		 * }
-		 */
+			for (int k = 0; k < allTransportedPeople.length; k++)
+				for (int z = 0; z < allTransportedPeople[k].size(); z++) {
+					for (int j = 0; j < sumAreas; j++) {
+						if (areas[j].getName() == allNames[k].get(z)) {
+							areas[j].addPersonToArea(allTransportedPeople[k].get(z));
+							areas[j].addCrowd();
+						}
+					}
+				}
+		}
 		for (int i = 0; i < sumAreas; i++) {
 
 			areas[i].printFinalStaticsforArea();

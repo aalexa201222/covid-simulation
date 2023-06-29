@@ -1,4 +1,6 @@
-//import edu.princeton.cs.introcs.StdDraw; // Library to import the StdDraw to the package
+package Team2;
+
+import edu.princeton.cs.introcs.StdDraw; // Library to import the StdDraw to the package
 import java.awt.Color;
 import java.util.ArrayList;
 
@@ -15,7 +17,7 @@ public class Movement extends Grid {
 
 	protected int crowd; // Number of people that appear in the room
 	private Person[] people; // All the people that have been created
-	private ArrayList<Person> ppl = new ArrayList<Person>();
+	private ArrayList<Person> ppl = new ArrayList<Person>(); // All the people that are used in the class Movement
 
 	/**
 	 * Movement constructor that takes 3 integers as inputs: h,w and c
@@ -32,11 +34,16 @@ public class Movement extends Grid {
 	}
 
 	/**
-	 * setPeople() method is udes to print people at the beginning of the game with
+	 * setPeople() method is used to print people at the beginning of the game with
 	 * their starting position by calling the method startingPoint()
+	 * 
+	 * @param pl All the people that are used in the class Movement
+	 * 
+	 * @return The updated arraylist after the movement has been done.
 	 */
-	public void setPeople(ArrayList<Person> pl) {
+	public ArrayList<Person> setPeople(ArrayList<Person> pl) {
 		ppl = startingPoint(pl);
+		return ppl;
 	}
 
 	/**
@@ -44,6 +51,8 @@ public class Movement extends Grid {
 	 * their starting points and draw them on the simulation. It makes sure that
 	 * each time the simulation is ra, there is always at least one person that is
 	 * infected.
+	 * 
+	 * @param ppl All the people that are used in the class Movement
 	 * 
 	 * @return Represents all the people that are used for the simulation
 	 */
@@ -111,7 +120,6 @@ public class Movement extends Grid {
 	 * @return A boolean value that shows if the Point is empty
 	 */
 	public boolean checkEmpty(Point p) {
-			//System.out.println(crowd);
 		for (int i = 0; i < crowd; i++)
 			if (p.equals(ppl.get(i).getCoordinates()))
 				return false;
@@ -165,14 +173,47 @@ public class Movement extends Grid {
 	}
 
 	/**
-	 * move() method takes one input as a parameter: max. It used everytime we want
-	 * to move people that are used during the simulation for one time
+	 * addPerson() method takes one Person as a parameter: p. This person is the
+	 * person that will move from one area to another area. In this method, it
+	 * updates the coordinates of the person to be placed in the new area and adds
+	 * it to the Arraylist ppl which stores all the people.
 	 * 
-	 * @param max Indicates Math.max(height,width)
+	 * @param p the person that will move from one area to another area
+	 */
+	public void addPerson(Person p) {
+
+		Point nCoordinate = new Point(0, 0);
+		if (crowd < super.height * super.width) {
+			boolean moved = false;
+			while (!moved) {
+				nCoordinate = new Point((int) (Math.random() * super.height), (int) (Math.random() * super.height));
+				if (checkEmpty(nCoordinate) && withinMargins(nCoordinate)) {
+					moved = true;
+					p.updateCoordinates(nCoordinate);
+				}
+			}
+			ppl.add(p);
+			crowd++;
+		}
+	}
+
+	/**
+	 * move() method takes three input as a parameter: max, noMask, mask. It is used
+	 * everytime we want to move people that are used during the simulation for one
+	 * time.
+	 * 
+	 * @param max    Indicates Math.max(height,width)
+	 * 
+	 * @param noMask Indicates the probabilities of infection when mask is not being
+	 *               uses
+	 * 
+	 * @param mask   Indicates the probabilities of infection when mask is not being
+	 *               uses
+	 * 
+	 * @return A person type Arraylist
 	 */
 	public ArrayList<Person> move(int max, int noMask, int mask) {
 		Point check = new Point(0, 0);
-	
 
 		for (int i = 0; i < crowd; i++) {
 			if (withinMargins(((Person) ppl.get(i)).getCoordinates()))
@@ -210,20 +251,47 @@ public class Movement extends Grid {
 		}
 		createGrid(max);
 
-		for (int i = 0; i < ppl.size(); i++) {
-			System.out.println(ppl.get(i).getCoordinates().getX() + " " + ppl.get(i).getCoordinates().getY());
-			//((Person) ppl.get(i)).drawPerson();
-		}
-		
-		System.out.println("\n");
+		System.out.println(crowd + " people are in this area.\n");
+		System.out.println("The coordinates of all the people in this area: ");
+		for (int i = 0; i < ppl.size(); i++)
+			System.out.println(i+1 + ": " + ppl.get(i).getCoordinates().getX() + "," + ppl.get(i).getCoordinates().getY());
+
+		System.out.println();
 		return ppl;
 	}
 
-	/*
-	 * public ArrayList<Person> move2 (ArrayList<Person> a) { for (int i = 0; i
-	 * <a.size(); i++) { if(((Person) a.get(i)).getCoordinates()==new Point (2,2))
-	 * a.remove(i); else ((Person) a.get(i)).drawPerson();} return a; }
+	/**
+	 * movePerson() method takes one input as a parameter: p. It is used everytime
+	 * we want to check if the person has moved out of the borders to another area.
+	 * 
+	 * @param p The person that will be check if has moved to another area.
+	 * 
+	 * @return A boolean value that indicates if the person has moved out of the
+	 *         area or not
 	 */
+	public boolean movePerson(Person p) {
+		Point check = new Point(0, 0);
+
+		if (withinMargins(p.getCoordinates()))
+			if (choiceToMove()) {
+				boolean[] directions = new boolean[9];
+				for (int j = 0; j < 9; j++)
+					directions[j] = false;
+
+				check = new Point((p.getCoordinates().getX()), ((Person) p).getCoordinates().getY());
+
+				int dir = (int) (Math.random() * 9) + 1;
+
+				check = new Point(((Person) p).getCoordinates().getX() + moveTo(dir).getX(),
+						((Person) p).getCoordinates().getY() + moveTo(dir).getY());
+
+			}
+
+		//if (!withinMargins(check))
+			//System.out.println("\nPerson has moved out of the area.");
+		return withinMargins(check);
+	}
+
 	/**
 	 * Getter method for this.people
 	 * 

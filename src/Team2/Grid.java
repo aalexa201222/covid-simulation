@@ -1,4 +1,6 @@
-//import edu.princeton.cs.introcs.StdDraw; // Library to import the StdDraw to the package
+package Team2;
+
+import edu.princeton.cs.introcs.StdDraw; // Library to import the StdDraw to the package
 
 /**
  * Grid Class represents the set of locations that people can move in the

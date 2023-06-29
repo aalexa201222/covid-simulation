@@ -1,6 +1,8 @@
+package Team2;
+
 import java.awt.Color;
 
-//import edu.princeton.cs.introcs.StdDraw;
+import edu.princeton.cs.introcs.StdDraw;
 
 /**
  * The class Person represents a person from the crowd that is used in the

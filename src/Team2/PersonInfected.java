@@ -1,3 +1,5 @@
+package Team2;
+
 import java.util.ArrayList;
 
 /**
@@ -27,7 +29,7 @@ public class PersonInfected {
 		ppl = m.getPeople();
 		crowd = m.getCrowd();
 	}
-	
+
 	/**
 	 * moveTo() method takes one input as a parameter: dir. It chooses to which
 	 * direction the person will move according to the dir that is given

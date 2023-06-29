@@ -1,3 +1,5 @@
+package Team2;
+
 /**
  * NegativeNumberException is an exception that is thrown when the user enters a
  * negative value as an input.
